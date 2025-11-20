@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useState } from 'react';
+import { useMemo, useCallback } from 'react';
 import { ethers } from 'ethers';
 import { useAccount, useWalletClient } from 'wagmi';
 import NumberPredictionGameABI from '../utils/NumberPredictionGameABI.json';
@@ -13,11 +13,6 @@ const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || '0x5FbDB231
 export const useGameContract = () => {
   const { address, isConnected } = useAccount();
   const { data: walletClient } = useWalletClient();
-
-  // Loading states
-  const [isPlacingBet, setIsPlacingBet] = useState(false);
-  const [isLoadingStats, setIsLoadingStats] = useState(false);
-  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
   const contract = useMemo(() => {
     if (!isConnected || !walletClient) {
@@ -56,7 +51,6 @@ export const useGameContract = () => {
    */
   const placeBet = useCallback(
     async (betNumber, betAmount) => {
-      setIsPlacingBet(true);
       try {
         if (!isConnected || !contract.signer) {
           throw new Error('Wallet not connected');
@@ -112,8 +106,6 @@ export const useGameContract = () => {
           success: false,
           error: error.message || 'Failed to place bet',
         };
-      } finally {
-        setIsPlacingBet(false);
       }
     },
     [contract, isConnected]
@@ -126,7 +118,6 @@ export const useGameContract = () => {
    */
   const getPlayerStats = useCallback(
     async (playerAddress) => {
-      setIsLoadingStats(true);
       try {
         // Get player's game IDs with a limit
         const gameIds = await contract.getPlayerGames(playerAddress, 1000);
@@ -177,8 +168,6 @@ export const useGameContract = () => {
           totalLost: '0',
           winRate: '0',
         };
-      } finally {
-        setIsLoadingStats(false);
       }
     },
     [contract]
@@ -191,7 +180,6 @@ export const useGameContract = () => {
    */
   const getGameHistory = useCallback(
     async (playerAddress) => {
-      setIsLoadingHistory(true);
       try {
         // Create filter for GamePlayed events by player address
         const filter = contract.filters.GamePlayed(null, playerAddress);
@@ -246,29 +234,19 @@ export const useGameContract = () => {
       } catch (error) {
         console.error('Error getting game history:', error);
         return [];
-      } finally {
-        setIsLoadingHistory(false);
       }
     },
     [contract]
   );
 
   return {
-    // Contract instance and connection info
     contract,
     contractAddress: CONTRACT_ADDRESS,
     isConnected,
     userAddress: address,
-    
-    // Functions
     placeBet,
     getPlayerStats,
     getGameHistory,
-    
-    // Loading states
-    isPlacingBet,
-    isLoadingStats,
-    isLoadingHistory,
   };
 };
 

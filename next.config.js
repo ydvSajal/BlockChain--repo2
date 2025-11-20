@@ -1,13 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "export",
-  trailingSlash: true,
+  reactStrictMode: true,
   images: {
     unoptimized: true,
-  },
-  experimental: {
-    appDir: false, // Keep this false for pages directory
-    esmExternals: "loose", // This helps with ESM/CommonJS compatibility
   },
   transpilePackages: [
     "@vanilla-extract/sprinkles",
@@ -30,6 +25,7 @@ const nextConfig = {
       zlib: false,
       path: false,
       os: false,
+      "@react-native-async-storage/async-storage": false,
     };
 
     // Fix for ESM/CommonJS compatibility
@@ -55,11 +51,6 @@ const nextConfig = {
     });
 
     return config;
-  },
-  // If you're using static export
-  trailingSlash: true,
-  images: {
-    unoptimized: true,
   },
 };
 
