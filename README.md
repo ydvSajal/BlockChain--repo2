@@ -1,13 +1,3 @@
-# Play-to-Earn Game on Blockchain DApp 
-
-![alt text](https://www.daulathussain.com/wp-content/uploads/2025/10/Build-Deploy-a-Play-to-Earn-Game-on-Blockchain-DApp-Next.js-Solidity-Crypto-Game-Project.jpg)
-
-- [Final Source Code](https://www.theblockchaincoders.com/sourceCode/build-and-deploy-a-play-to-earn-game-on-blockchain-dapp-or-next.js-+-solidity-crypto-game-project)
-
-#### Setup Video
-
-- [Final Code Setup video](https://youtu.be/lvBgYNFzXkQ?si=joohUtpn9iscFtRZ)
-
 ## Project Overview
 
 Build & Deploy a Play-to-Earn Game on Blockchain DApp | Next.js + Solidity - Crypto Game Project
@@ -107,6 +97,34 @@ If you download the final source code then you can follow the following instruct
 - [Get Pro Blockchain Developer Course](https://www.theblockchaincoders.com/pro-nft-marketplace)
 - [Support Creator](https://bit.ly/Support-Creator)
 - [All Projects Source Code](https://www.theblockchaincoders.com/SourceCode)
+
+## Money Flow in the Game
+
+### When You LOSE:
+- **Your wallet → Contract's wallet**
+- Your bet amount (`msg.value`) stays in the contract
+- The contract keeps 100% of your losing bet
+- This builds up the contract's bankroll (house funds)
+
+### When You WIN:
+- **Your wallet → Contract's wallet** (your bet goes in first)
+- **Contract's wallet → Your wallet** (you get 6x payout back)
+- You receive 6x your bet amount from the contract's balance
+- Net effect: You profit 5x your bet (you get back your original bet + 5x profit)
+
+### Example:
+If you bet 0.1 ETH:
+- **Lose:** You send 0.1 ETH to contract, get 0 back → You lose 0.1 ETH
+- **Win:** You send 0.1 ETH to contract, get 0.6 ETH back → You profit 0.5 ETH
+
+### Important Notes:
+1. **Contract Needs Funding:** The contract must have enough ETH balance to pay winners. If the contract balance is less than the payout (6x your bet), the transaction will fail.
+
+2. **House Bankroll:** The contract owner must initially deposit funds using `depositFunds()` or by sending ETH directly to the contract address to ensure there's enough balance to pay winners.
+
+3. **Owner Can Withdraw:** The contract owner can withdraw funds from the contract balance at any time using the `withdraw()` function.
+
+4. **Contract Address:** The contract acts as "the house" - it's the central pool that collects losing bets and pays out winning bets.
 
 ## Authors
 
